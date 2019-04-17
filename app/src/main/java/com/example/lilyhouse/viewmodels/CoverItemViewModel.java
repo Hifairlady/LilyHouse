@@ -28,4 +28,8 @@ public class CoverItemViewModel extends AndroidViewModel {
     public void insertItems(MangaCoverItem... items) {
         mCoverItemRepo.insertItems(items);
     }
+
+    public void deleteAllItems() {
+        mCoverItemRepo.deleteAllItems();
+    }
 }

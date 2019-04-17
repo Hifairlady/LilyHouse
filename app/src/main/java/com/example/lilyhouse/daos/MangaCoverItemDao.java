@@ -18,6 +18,6 @@ public interface MangaCoverItemDao {
     @Query("DELETE FROM manga_cover_item_table")
     void deleteAllItems();
 
-    @Query("SELECT * FROM manga_cover_item_table ORDER BY lastupdatetime DESC")
+    @Query("SELECT * FROM manga_cover_item_table ORDER BY num DESC")
     LiveData<List<MangaCoverItem>> getAllItems();
 }

@@ -28,6 +28,10 @@ public class CoverItemRepo {
         new InsertAsyncTask(coverItemDao).execute(items);
     }
 
+    public void deleteAllItems() {
+        new DeleteAllAsyncTask(coverItemDao).execute();
+    }
+
     private class InsertAsyncTask extends AsyncTask<MangaCoverItem, Void, Void> {
 
         private MangaCoverItemDao itemDao;
@@ -39,6 +43,21 @@ public class CoverItemRepo {
         @Override
         protected Void doInBackground(MangaCoverItem... mangaCoverItems) {
             itemDao.insertItems(mangaCoverItems);
+            return null;
+        }
+    }
+
+    private class DeleteAllAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private MangaCoverItemDao itemDao;
+
+        public DeleteAllAsyncTask(MangaCoverItemDao itemDao) {
+            this.itemDao = itemDao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            itemDao.deleteAllItems();
             return null;
         }
     }

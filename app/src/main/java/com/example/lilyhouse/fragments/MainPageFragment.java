@@ -8,9 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.example.lilyhouse.R;
 import com.example.lilyhouse.adapters.CoverListAdapter;
 import com.example.lilyhouse.apiservices.MangaCoverItemService;
+import com.example.lilyhouse.clients.MangaCoverItemClient;
 import com.example.lilyhouse.models.MangaCoverItem;
 import com.example.lilyhouse.viewmodels.CoverItemViewModel;
 
@@ -26,12 +27,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainPageFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String TAG = "======MainPageFragment";
     private final String BASIC_JSON_URL = "https://m.dmzj.com/classify/";
 
@@ -47,8 +44,18 @@ public class MainPageFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private SwipeRefreshLayout srlLayout;
     private RecyclerView rvCoverItems;
     private CoverListAdapter coverListAdapter;
+
+    private SwipeRefreshLayout.OnRefreshListener mRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            rvCoverItems.setVisibility(View.GONE);
+            mCoverViewModel.deleteAllItems();
+            loadCoverItems(12, 0, 0, 1, 0, 0);
+        }
+    };
 
 
     public MainPageFragment() {
@@ -77,17 +84,17 @@ public class MainPageFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        Log.d(TAG, "onCreateView: ");
         View rootView = inflater.inflate(R.layout.fragment_main_page, container, false);
 
+        srlLayout = rootView.findViewById(R.id.main_refresh_layout);
+        srlLayout.setColorSchemeColors(0xFFFFDBCF);
+        srlLayout.setOnRefreshListener(mRefreshListener);
         rvCoverItems = rootView.findViewById(R.id.main_recyclerview);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-//        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvCoverItems.setLayoutManager(layoutManager);
         coverListAdapter = new CoverListAdapter(getActivity());
         rvCoverItems.setAdapter(coverListAdapter);
+        rvCoverItems.setItemAnimator(null);
 
         return rootView;
     }
@@ -107,35 +114,74 @@ public class MainPageFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<MangaCoverItem> mangaCoverItems) {
                 coverListAdapter.setItems(mangaCoverItems);
+                srlLayout.setRefreshing(false);
+                rvCoverItems.setVisibility(View.VISIBLE);
             }
         });
 
-        startFetchingData();
+        if (mCoverViewModel.getCoverItems().getValue() == null || mCoverViewModel.getCoverItems().getValue().size() == 0) {
+            loadCoverItems(12, 0, 0, 1, 0, 0);
+        }
 
     }
 
-    private void startFetchingData() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASIC_JSON_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        MangaCoverItemService itemService = retrofit.create(MangaCoverItemService.class);
+//    private void startFetchingData() {
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(BASIC_JSON_URL)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//        MangaCoverItemService itemService = retrofit.create(MangaCoverItemService.class);
+//
+//        String urlString = "12-0-0-1-0-0.json";
+//        Call<List<MangaCoverItem>> call = itemService.getCoverItems(urlString);
+//        Call<List<MangaCoverItem>> call = itemService.getCoverItems(12, 0, 0, 1, 0, 0);
+//
+//        call.enqueue(new Callback<List<MangaCoverItem>>() {
+//            @Override
+//            public void onResponse(Call<List<MangaCoverItem>> call, Response<List<MangaCoverItem>> response) {
+//                if (!response.isSuccessful()) {
+//                    Snackbar.make(rvCoverItems, "Request Page Error!", Snackbar.LENGTH_SHORT).show();
+//                } else {
+//                    MangaCoverItem[] items = new MangaCoverItem[response.body().size()];
+//                    response.body().toArray(items);
+//                    mCoverViewModel.insertItems(items);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<MangaCoverItem>> call, Throwable t) {
+//                Snackbar.make(rvCoverItems, "Network Error!", Snackbar.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//    }
 
-        String urlString = "12-0-0-1-0-0.json";
-        Call<List<MangaCoverItem>> call = itemService.getCoverItems(urlString);
 
+//     a: 题材(百合-12) b: 读者群(少年-0) c: 进度(连载-1) d: 地区(日本-1) e: 排序(人气-0) f: 页码-0
+//    private String getUrlString(int subjectCode, int groupCode, int statusCode, int regionCode,
+//                                int sortCode, int pageCode) {
+//        String urlString = subjectCode + "-" + groupCode + "-" + statusCode + "-" + regionCode +
+//                "-" + sortCode + "-" + pageCode + ".json";
+//        return urlString;
+//    }
+
+    private void loadCoverItems(int subjectCode, int groupCode, int statusCode, int regionCode,
+                                int sortCode, int pageCode) {
+        MangaCoverItemService itemService =
+                MangaCoverItemClient.getRetrofit().create(MangaCoverItemService.class);
+        Call<List<MangaCoverItem>> call = itemService.getCoverItems(subjectCode, groupCode, statusCode,
+                regionCode, sortCode, pageCode);
         call.enqueue(new Callback<List<MangaCoverItem>>() {
             @Override
             public void onResponse(Call<List<MangaCoverItem>> call, Response<List<MangaCoverItem>> response) {
                 if (!response.isSuccessful()) {
-                    Log.d(TAG, "onResponse: " + response.code());
                     Snackbar.make(rvCoverItems, "Request Page Error!", Snackbar.LENGTH_SHORT).show();
                 } else {
                     MangaCoverItem[] items = new MangaCoverItem[response.body().size()];
                     response.body().toArray(items);
                     mCoverViewModel.insertItems(items);
-//                    coverListAdapter.addItems(response.body());
-                    Log.d(TAG, "onResponse: " + response.body().size());
+                    for (MangaCoverItem item : items) {
+                    }
                 }
             }
 
@@ -144,17 +190,6 @@ public class MainPageFragment extends Fragment {
                 Snackbar.make(rvCoverItems, "Network Error!", Snackbar.LENGTH_SHORT).show();
             }
         });
-
-    }
-
-
-    // a: 题材(百合-12) b: 读者群(少年-0) c: 进度(连载-1) d: 地区(日本-1) e: 排序(人气-0) f: 页码-0
-    private String getUrlString(int subjectCode, int groupCode, int statusCode, int regionCode,
-                                int sortCode, int pageCode) {
-        String urlString = subjectCode + "-" + groupCode + "-" + statusCode + "-" + regionCode +
-                "-" + sortCode + "-" + pageCode + ".json";
-        Log.d(TAG, "getUrlString: " + urlString);
-        return urlString;
     }
 
 }
