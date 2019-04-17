@@ -1,6 +1,8 @@
-package com.example.lilyhouse;
+package com.example.lilyhouse.fragments;
 
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,9 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.lilyhouse.R;
 import com.example.lilyhouse.adapters.CoverListAdapter;
 import com.example.lilyhouse.apiservices.MangaCoverItemService;
 import com.example.lilyhouse.models.MangaCoverItem;
+import com.example.lilyhouse.viewmodels.CoverItemViewModel;
 
 import java.util.List;
 
@@ -30,6 +34,8 @@ public class MainPageFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String TAG = "======MainPageFragment";
     private final String BASIC_JSON_URL = "https://m.dmzj.com/classify/";
+
+    private CoverItemViewModel mCoverViewModel;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -95,6 +101,20 @@ public class MainPageFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        mCoverViewModel = ViewModelProviders.of(getActivity()).get(CoverItemViewModel.class);
+        mCoverViewModel.getCoverItems().observe(getActivity(), new Observer<List<MangaCoverItem>>() {
+            @Override
+            public void onChanged(@Nullable List<MangaCoverItem> mangaCoverItems) {
+                coverListAdapter.setItems(mangaCoverItems);
+            }
+        });
+
+        startFetchingData();
+
+    }
+
+    private void startFetchingData() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASIC_JSON_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -111,7 +131,10 @@ public class MainPageFragment extends Fragment {
                     Log.d(TAG, "onResponse: " + response.code());
                     Snackbar.make(rvCoverItems, "Request Page Error!", Snackbar.LENGTH_SHORT).show();
                 } else {
-                    coverListAdapter.addItems(response.body());
+                    MangaCoverItem[] items = new MangaCoverItem[response.body().size()];
+                    response.body().toArray(items);
+                    mCoverViewModel.insertItems(items);
+//                    coverListAdapter.addItems(response.body());
                     Log.d(TAG, "onResponse: " + response.body().size());
                 }
             }
@@ -121,7 +144,9 @@ public class MainPageFragment extends Fragment {
                 Snackbar.make(rvCoverItems, "Network Error!", Snackbar.LENGTH_SHORT).show();
             }
         });
+
     }
+
 
     // a: 题材(百合-12) b: 读者群(少年-0) c: 进度(连载-1) d: 地区(日本-1) e: 排序(人气-0) f: 页码-0
     private String getUrlString(int subjectCode, int groupCode, int statusCode, int regionCode,

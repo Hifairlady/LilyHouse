@@ -71,6 +71,13 @@ public class CoverListAdapter extends RecyclerView.Adapter {
         notifyItemRangeInserted(pos, items.size());
     }
 
+    public void setItems(List<MangaCoverItem> items) {
+        if (coverItems == null) coverItems = new ArrayList<>();
+        coverItems.clear();
+        coverItems.addAll(items);
+        notifyItemRangeInserted(0, items.size());
+    }
+
     private class NormalVH extends RecyclerView.ViewHolder {
 
         private ImageView ivCover;

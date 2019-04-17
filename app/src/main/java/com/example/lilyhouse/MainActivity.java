@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.example.lilyhouse.fragments.MainPageFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
