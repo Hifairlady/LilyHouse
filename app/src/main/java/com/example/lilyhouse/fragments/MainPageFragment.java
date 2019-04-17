@@ -52,7 +52,9 @@ public class MainPageFragment extends Fragment {
         @Override
         public void onRefresh() {
             pageCode = 0;
-            rvCoverItems.setVisibility(View.GONE);
+            coverListAdapter = new CoverListAdapter(getActivity());
+            rvCoverItems.setAdapter(coverListAdapter);
+            rvCoverItems.invalidate();
             mCoverViewModel.deleteAllItems();
             loadCoverItems(12, 0, 0, 1, 0, 0);
         }
@@ -86,7 +88,29 @@ public class MainPageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main_page, container, false);
+        initView(rootView);
+        return rootView;
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mCoverViewModel = ViewModelProviders.of(getActivity()).get(CoverItemViewModel.class);
+        mCoverViewModel.getCoverItems().observe(getActivity(), new Observer<List<MangaCoverItem>>() {
+            @Override
+            public void onChanged(@Nullable List<MangaCoverItem> mangaCoverItems) {
+                coverListAdapter.setItems(mangaCoverItems);
+            }
+        });
+
+        if (mCoverViewModel.getCoverItems().getValue() == null || mCoverViewModel.getCoverItems().getValue().size() == 0) {
+            loadCoverItems(12, 0, 0, 1, 0, 0);
+        }
+
+    }
+
+    private void initView(View rootView) {
         srlLayout = rootView.findViewById(R.id.main_refresh_layout);
         srlLayout.setColorSchemeColors(0xFFFFDBCF);
         srlLayout.setOnRefreshListener(mRefreshListener);
@@ -114,38 +138,6 @@ public class MainPageFragment extends Fragment {
                 }
             }
         });
-
-        return rootView;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        mCoverViewModel = ViewModelProviders.of(getActivity()).get(CoverItemViewModel.class);
-        mCoverViewModel.getCoverItems().observe(getActivity(), new Observer<List<MangaCoverItem>>() {
-            @Override
-            public void onChanged(@Nullable List<MangaCoverItem> mangaCoverItems) {
-                coverListAdapter.setItems(mangaCoverItems);
-                rvCoverItems.setVisibility(View.VISIBLE);
-            }
-        });
-
-        if (mCoverViewModel.getCoverItems().getValue() == null || mCoverViewModel.getCoverItems().getValue().size() == 0) {
-            loadCoverItems(12, 0, 0, 1, 0, 0);
-        }
-
-    }
-
-    private void loadNextPageItems() {
-        pageCode = pageCode + 1;
-        loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
     }
 
     private void loadCoverItems(int subjectCode, int groupCode, int statusCode, int regionCode,
@@ -159,7 +151,6 @@ public class MainPageFragment extends Fragment {
             public void onResponse(Call<List<MangaCoverItem>> call, Response<List<MangaCoverItem>> response) {
                 if (!response.isSuccessful()) {
                     Snackbar.make(rvCoverItems, "Request Page Error!", Snackbar.LENGTH_SHORT).show();
-                    rvCoverItems.setVisibility(View.VISIBLE);
                 } else {
                     MangaCoverItem[] items = new MangaCoverItem[response.body().size()];
                     response.body().toArray(items);
@@ -172,9 +163,13 @@ public class MainPageFragment extends Fragment {
             public void onFailure(Call<List<MangaCoverItem>> call, Throwable t) {
                 Snackbar.make(rvCoverItems, "Network Error!", Snackbar.LENGTH_SHORT).show();
                 srlLayout.setRefreshing(false);
-                rvCoverItems.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private void loadNextPageItems() {
+        pageCode = pageCode + 1;
+        loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
     }
 
 }

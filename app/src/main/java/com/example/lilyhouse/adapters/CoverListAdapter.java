@@ -6,10 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.example.lilyhouse.GlideApp;
@@ -50,13 +51,16 @@ public class CoverListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         NormalVH normalVH = (NormalVH) viewHolder;
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_from_bottom);
+        normalVH.itemView.startAnimation(animation);
         normalVH.tvTitle.setText(coverItems.get(i).name);
         normalVH.tvAuthor.setText(coverItems.get(i).authors);
         String imgUrl = BASIC_IMAGE_URL + coverItems.get(i).cover;
         GlideApp.with(normalVH.ivCover)
                 .load(getGlideUrl(imgUrl))
+                .error(R.drawable.error_bg)
+                .placeholder(R.drawable.loading_bg)
                 .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(normalVH.ivCover);
 
     }

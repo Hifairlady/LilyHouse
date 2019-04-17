@@ -2,9 +2,6 @@
     <string name="app_name">LilyHouse</string>
     <string name="FILTER_MENU_ITEM_TITLE">Filter</string>
     <string name="SEARCH_MENU_ITEM_TITLE">Search</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="COVER_MANGA_TITLE_STRING">Manga Title</string>
     <string name="COVER_MANGA_AUTHOR_STRING">Manga Author</string>
 </resources>
