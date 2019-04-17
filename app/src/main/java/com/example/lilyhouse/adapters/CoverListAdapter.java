@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.example.lilyhouse.GlideApp;
@@ -52,9 +53,10 @@ public class CoverListAdapter extends RecyclerView.Adapter {
         normalVH.tvTitle.setText(coverItems.get(i).name);
         normalVH.tvAuthor.setText(coverItems.get(i).authors);
         String imgUrl = BASIC_IMAGE_URL + coverItems.get(i).cover;
-        GlideApp.with(context)
+        GlideApp.with(normalVH.ivCover)
                 .load(getGlideUrl(imgUrl))
                 .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(normalVH.ivCover);
 
     }
@@ -62,6 +64,12 @@ public class CoverListAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return (coverItems == null ? 0 : coverItems.size());
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (coverItems == null || coverItems.size() == 0) return 0;
+        return coverItems.get(position).id;
     }
 
     public void addItems(List<MangaCoverItem> items) {
@@ -73,9 +81,11 @@ public class CoverListAdapter extends RecyclerView.Adapter {
 
     public void setItems(List<MangaCoverItem> items) {
         if (coverItems == null) coverItems = new ArrayList<>();
+        int pos = coverItems.size();
+        int count = items.size() - coverItems.size();
         coverItems.clear();
         coverItems.addAll(items);
-        notifyItemRangeInserted(0, items.size());
+        notifyItemRangeInserted(pos, count);
     }
 
     private class NormalVH extends RecyclerView.ViewHolder {

@@ -51,6 +51,7 @@ public class MainPageFragment extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
+            pageCode = 0;
             rvCoverItems.setVisibility(View.GONE);
             mCoverViewModel.deleteAllItems();
             loadCoverItems(12, 0, 0, 1, 0, 0);
@@ -90,11 +91,29 @@ public class MainPageFragment extends Fragment {
         srlLayout.setColorSchemeColors(0xFFFFDBCF);
         srlLayout.setOnRefreshListener(mRefreshListener);
         rvCoverItems = rootView.findViewById(R.id.main_recyclerview);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+        final GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
         rvCoverItems.setLayoutManager(layoutManager);
         coverListAdapter = new CoverListAdapter(getActivity());
+        coverListAdapter.setHasStableIds(true);
         rvCoverItems.setAdapter(coverListAdapter);
         rvCoverItems.setItemAnimator(null);
+
+        rvCoverItems.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                GridLayoutManager layoutManager1 = (GridLayoutManager) rvCoverItems.getLayoutManager();
+                int lastPos = layoutManager1.findLastCompletelyVisibleItemPosition();
+                if (lastPos >= coverListAdapter.getItemCount() - 1) {
+                    loadNextPageItems();
+                }
+            }
+        });
 
         return rootView;
     }
@@ -114,7 +133,6 @@ public class MainPageFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<MangaCoverItem> mangaCoverItems) {
                 coverListAdapter.setItems(mangaCoverItems);
-                srlLayout.setRefreshing(false);
                 rvCoverItems.setVisibility(View.VISIBLE);
             }
         });
@@ -125,45 +143,10 @@ public class MainPageFragment extends Fragment {
 
     }
 
-//    private void startFetchingData() {
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(BASIC_JSON_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//        MangaCoverItemService itemService = retrofit.create(MangaCoverItemService.class);
-//
-//        String urlString = "12-0-0-1-0-0.json";
-//        Call<List<MangaCoverItem>> call = itemService.getCoverItems(urlString);
-//        Call<List<MangaCoverItem>> call = itemService.getCoverItems(12, 0, 0, 1, 0, 0);
-//
-//        call.enqueue(new Callback<List<MangaCoverItem>>() {
-//            @Override
-//            public void onResponse(Call<List<MangaCoverItem>> call, Response<List<MangaCoverItem>> response) {
-//                if (!response.isSuccessful()) {
-//                    Snackbar.make(rvCoverItems, "Request Page Error!", Snackbar.LENGTH_SHORT).show();
-//                } else {
-//                    MangaCoverItem[] items = new MangaCoverItem[response.body().size()];
-//                    response.body().toArray(items);
-//                    mCoverViewModel.insertItems(items);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<MangaCoverItem>> call, Throwable t) {
-//                Snackbar.make(rvCoverItems, "Network Error!", Snackbar.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//    }
-
-
-//     a: 题材(百合-12) b: 读者群(少年-0) c: 进度(连载-1) d: 地区(日本-1) e: 排序(人气-0) f: 页码-0
-//    private String getUrlString(int subjectCode, int groupCode, int statusCode, int regionCode,
-//                                int sortCode, int pageCode) {
-//        String urlString = subjectCode + "-" + groupCode + "-" + statusCode + "-" + regionCode +
-//                "-" + sortCode + "-" + pageCode + ".json";
-//        return urlString;
-//    }
+    private void loadNextPageItems() {
+        pageCode = pageCode + 1;
+        loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
+    }
 
     private void loadCoverItems(int subjectCode, int groupCode, int statusCode, int regionCode,
                                 int sortCode, int pageCode) {
@@ -176,18 +159,20 @@ public class MainPageFragment extends Fragment {
             public void onResponse(Call<List<MangaCoverItem>> call, Response<List<MangaCoverItem>> response) {
                 if (!response.isSuccessful()) {
                     Snackbar.make(rvCoverItems, "Request Page Error!", Snackbar.LENGTH_SHORT).show();
+                    rvCoverItems.setVisibility(View.VISIBLE);
                 } else {
                     MangaCoverItem[] items = new MangaCoverItem[response.body().size()];
                     response.body().toArray(items);
                     mCoverViewModel.insertItems(items);
-                    for (MangaCoverItem item : items) {
-                    }
                 }
+                srlLayout.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<List<MangaCoverItem>> call, Throwable t) {
                 Snackbar.make(rvCoverItems, "Network Error!", Snackbar.LENGTH_SHORT).show();
+                srlLayout.setRefreshing(false);
+                rvCoverItems.setVisibility(View.VISIBLE);
             }
         });
     }
