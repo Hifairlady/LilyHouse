@@ -12,12 +12,12 @@ import java.util.List;
 
 @Dao
 public interface MangaCoverItemDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertItems(MangaCoverItem... items);
 
     @Query("DELETE FROM manga_cover_item_table")
     void deleteAllItems();
 
-    @Query("SELECT * FROM manga_cover_item_table ORDER BY num DESC")
+    @Query("SELECT * FROM manga_cover_item_table ORDER BY jointimenanos ASC")
     LiveData<List<MangaCoverItem>> getAllItems();
 }

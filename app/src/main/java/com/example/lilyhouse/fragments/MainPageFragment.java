@@ -34,15 +34,13 @@ public class MainPageFragment extends Fragment {
 
     private CoverItemViewModel mCoverViewModel;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String REQUEST_CODES_PARAM = "REQUEST_CODES_PARAM";
 
     // a: 题材(百合-12) b: 读者群(少年-1) c: 进度(连载-1) d: 地区(日本-1) e: 排序(人气-0) f: 页码-0
-    int subjectCode = 1, groupCode = 0, statusCode = 0, regionCode = 1, sortCode = 0, pageCode = 0;
+    int subjectCode = 0, groupCode = 0, statusCode = 0, regionCode = 0, sortCode = 0, pageCode = 0;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int[] requestCodes;
 
     private boolean isLoadingNext = false;
 
@@ -53,12 +51,7 @@ public class MainPageFragment extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            pageCode = 0;
-            coverListAdapter = new CoverListAdapter(getActivity());
-            rvCoverItems.setAdapter(coverListAdapter);
-            rvCoverItems.invalidate();
-            mCoverViewModel.deleteAllItems();
-            loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
+            refreshAction();
         }
     };
 
@@ -67,11 +60,10 @@ public class MainPageFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static MainPageFragment newInstance(String param1, String param2) {
+    public static MainPageFragment newInstance(int[] codes) {
         MainPageFragment fragment = new MainPageFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putIntArray(REQUEST_CODES_PARAM, codes);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,8 +72,15 @@ public class MainPageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            requestCodes = getArguments().getIntArray(REQUEST_CODES_PARAM);
+            if (requestCodes != null) {
+                subjectCode = requestCodes[0];
+                groupCode = requestCodes[1];
+                statusCode = requestCodes[2];
+                regionCode = requestCodes[3];
+                sortCode = requestCodes[4];
+                pageCode = requestCodes[5];
+            }
         }
     }
 
@@ -110,7 +109,8 @@ public class MainPageFragment extends Fragment {
 
         //load first page
         if (mCoverViewModel.getCoverItems().getValue() == null || mCoverViewModel.getCoverItems().getValue().size() == 0) {
-            loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
+//            loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
+            refreshAction();
         }
 
     }
@@ -179,6 +179,20 @@ public class MainPageFragment extends Fragment {
     private void loadNextPageItems() {
         pageCode = pageCode + 1;
         coverListAdapter.removeFooter();
+        loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
+    }
+
+    public void switchSortOrder(int order) {
+        sortCode = order;
+        refreshAction();
+    }
+
+    private void refreshAction() {
+        pageCode = 0;
+        coverListAdapter = new CoverListAdapter(getActivity());
+        rvCoverItems.setAdapter(coverListAdapter);
+        rvCoverItems.invalidate();
+        mCoverViewModel.deleteAllItems();
         loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
     }
 
