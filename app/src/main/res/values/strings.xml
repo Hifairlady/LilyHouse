@@ -4,4 +4,56 @@
     <string name="SEARCH_MENU_ITEM_TITLE">Search</string>
     <string name="COVER_MANGA_TITLE_STRING">Manga Title</string>
     <string name="COVER_MANGA_AUTHOR_STRING">Manga Author</string>
+    <string name="DIALOG_FILTER_TITLE_STRING">筛选</string>
+    <string name="SORT_MENU_ITEM_TITLE">Sort</string>
+    <string name="SUBJECT_TITLE_TEXT">题材</string>
+    <string name="REGION_TITLE_TEXT">地区</string>
+    <string name="STATUS_TITLE_TEXT">进度</string>
+    <string name="BTN_CANCEL_FILTER_TEXT">取消</string>
+    <string name="BTN_APPLY_FILTER_TEXT">应用</string>
+
+    <string-array name="subject_titles_array">
+        <item>全部</item>
+        <item>冒险</item>
+        <item>欢乐向</item>
+        <item>格斗</item>
+        <item>科幻</item>
+        <item>爱情</item>
+        <item>竞技</item>
+        <item>魔法</item>
+        <item>校园</item>
+        <item>悬疑</item>
+        <item>恐怖</item>
+        <item>生活亲情</item>
+        <item>百合</item>
+        <item>伪娘</item>
+        <item>耽美</item>
+        <item>后宫</item>
+        <item>萌系</item>
+        <item>治愈</item>
+        <item>武侠</item>
+        <item>职场</item>
+        <item>奇幻</item>
+        <item>节操</item>
+        <item>轻小说</item>
+        <item>搞笑</item>
+    </string-array>
+
+    <string-array name="status_titles_array">
+        <item>全部</item>
+        <item>连载</item>
+        <item>完结</item>
+    </string-array>
+
+    <string-array name="region_titles_array">
+        <item>全部</item>
+        <item>日本</item>
+        <item>内地</item>
+        <item>欧美</item>
+        <item>港台</item>
+        <item>韩国</item>
+        <item>其他</item>
+    </string-array>
+
+
 </resources>

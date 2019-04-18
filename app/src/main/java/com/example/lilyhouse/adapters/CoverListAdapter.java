@@ -22,6 +22,7 @@ import java.util.List;
 
 public class CoverListAdapter extends RecyclerView.Adapter {
 
+    private static final String TAG = "======CoverListAdapter";
     private static final String BASIC_IMAGE_URL = "https://images.dmzj.com/";
     private ArrayList<MangaCoverItem> coverItems = new ArrayList<>();
     private Context context;

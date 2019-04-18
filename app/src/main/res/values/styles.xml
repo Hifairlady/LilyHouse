@@ -18,4 +18,13 @@
         <item name="android:textSize">14sp</item>
         <item name="fontFamily">@font/rubik</item>
     </style>
+
+    <style name="MyButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="rippleColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:fontFamily">@font/rubik</item>
+    </style>
 </resources>

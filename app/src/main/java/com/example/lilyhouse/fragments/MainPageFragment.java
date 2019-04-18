@@ -37,8 +37,8 @@ public class MainPageFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // a: 题材(百合-12) b: 读者群(少年-0) c: 进度(连载-1) d: 地区(日本-1) e: 排序(人气-0) f: 页码-0
-    int subjectCode = 12, groupCode = 0, statusCode = 0, regionCode = 1, sortCode = 0, pageCode = 0;
+    // a: 题材(百合-12) b: 读者群(少年-1) c: 进度(连载-1) d: 地区(日本-1) e: 排序(人气-0) f: 页码-0
+    int subjectCode = 1, groupCode = 0, statusCode = 0, regionCode = 1, sortCode = 0, pageCode = 0;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -58,7 +58,7 @@ public class MainPageFragment extends Fragment {
             rvCoverItems.setAdapter(coverListAdapter);
             rvCoverItems.invalidate();
             mCoverViewModel.deleteAllItems();
-            loadCoverItems(12, 0, 0, 1, 0, 0);
+            loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
         }
     };
 
@@ -108,8 +108,9 @@ public class MainPageFragment extends Fragment {
             }
         });
 
+        //load first page
         if (mCoverViewModel.getCoverItems().getValue() == null || mCoverViewModel.getCoverItems().getValue().size() == 0) {
-            loadCoverItems(12, 0, 0, 1, 0, 0);
+            loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
         }
 
     }
