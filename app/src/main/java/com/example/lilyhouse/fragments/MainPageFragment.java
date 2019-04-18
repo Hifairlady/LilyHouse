@@ -196,4 +196,14 @@ public class MainPageFragment extends Fragment {
         loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
     }
 
+    public void filterApplyAction(int[] requestCodes) {
+        subjectCode = requestCodes[0];
+        groupCode = requestCodes[1];
+        statusCode = requestCodes[2];
+        regionCode = requestCodes[3];
+        sortCode = requestCodes[4];
+        pageCode = requestCodes[5];
+        refreshAction();
+    }
+
 }
