@@ -55,6 +55,13 @@ public class MainPageFragment extends Fragment {
         }
     };
 
+    private CoverListAdapter.OnItemClickListener mOnItemClickListener = new CoverListAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(int position) {
+            // TODO: 2019/4/19 goto detail activity
+        }
+    };
+
 
     public MainPageFragment() {
         // Required empty public constructor
@@ -144,6 +151,8 @@ public class MainPageFragment extends Fragment {
                 }
             }
         });
+
+        coverListAdapter.setOnItemClickListener(mOnItemClickListener);
     }
 
     private void loadCoverItems(int subjectCode, int groupCode, int statusCode, int regionCode,
@@ -190,6 +199,7 @@ public class MainPageFragment extends Fragment {
     private void refreshAction() {
         pageCode = 0;
         coverListAdapter = new CoverListAdapter(getActivity());
+        coverListAdapter.setOnItemClickListener(mOnItemClickListener);
         rvCoverItems.setAdapter(coverListAdapter);
         rvCoverItems.invalidate();
         mCoverViewModel.deleteAllItems();

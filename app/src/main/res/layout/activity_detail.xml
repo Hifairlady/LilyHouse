@@ -1,153 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    tools:context=".scenes.DetailActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="@font/rubik"
-        android:gravity="center_vertical"
-        android:text="@string/DIALOG_FILTER_TITLE_STRING"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
-        android:textColor="@color/textColorPrimary"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_subject_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="8dp"
-        android:padding="8dp"
-        android:text="@string/SUBJECT_TITLE_TEXT"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/spinner_subject"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/spinner_subject" />
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_region_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@string/REGION_TITLE_TEXT"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/spinner_region"
-        app:layout_constraintEnd_toEndOf="@+id/tv_subject_title"
-        app:layout_constraintStart_toStartOf="@+id/tv_subject_title"
-        app:layout_constraintTop_toTopOf="@+id/spinner_region" />
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
 
-    <TextView
-        android:id="@+id/tv_status_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="@string/STATUS_TITLE_TEXT"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/spinner_status"
-        app:layout_constraintEnd_toEndOf="@+id/tv_subject_title"
-        app:layout_constraintStart_toStartOf="@+id/tv_subject_title"
-        app:layout_constraintTop_toTopOf="@+id/spinner_status" />
+            </android.support.v7.widget.Toolbar>
 
-    <Spinner
-        android:id="@+id/spinner_subject"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:dropDownWidth="wrap_content"
-        android:entries="@array/subject_titles_array"
-        android:padding="8dp"
-        android:spinnerMode="dropdown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-    <Spinner
-        android:id="@+id/spinner_region"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:dropDownWidth="wrap_content"
-        android:entries="@array/region_titles_array"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/spinner_subject"
-        app:layout_constraintStart_toStartOf="@+id/spinner_subject"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_subject" />
+    </android.support.design.widget.AppBarLayout>
 
-    <Spinner
-        android:id="@+id/spinner_status"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:dropDownWidth="wrap_content"
-        android:entries="@array/status_titles_array"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/spinner_subject"
-        app:layout_constraintStart_toStartOf="@+id/spinner_subject"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_region" />
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></android.support.v4.widget.NestedScrollView>
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:contentDescription="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_status"
-        app:srcCompat="@android:color/darker_gray" />
-
-    <android.support.design.button.MaterialButton
-        android:id="@+id/btn_cancel_filter"
-        style="@style/MyButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/BTN_CANCEL_FILTER_TEXT"
-        android:textColor="@android:color/secondary_text_dark"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_apply_filter"
-        app:layout_constraintEnd_toStartOf="@+id/btn_apply_filter"
-        app:layout_constraintTop_toTopOf="@+id/btn_apply_filter" />
-
-    <android.support.design.button.MaterialButton
-        android:id="@+id/btn_apply_filter"
-        style="@style/MyButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/BTN_APPLY_FILTER_TEXT"
-        android:textColor="@color/textColorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

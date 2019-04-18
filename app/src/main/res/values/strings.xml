@@ -11,6 +11,7 @@
     <string name="STATUS_TITLE_TEXT">进度</string>
     <string name="BTN_CANCEL_FILTER_TEXT">取消</string>
     <string name="BTN_APPLY_FILTER_TEXT">应用</string>
+    <string name="FAVORITE_MENU_ITEM_TITLE">Favorite</string>
 
     <string-array name="subject_titles_array">
         <item>全部</item>

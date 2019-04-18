@@ -1,6 +1,5 @@
 package com.example.lilyhouse;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +11,6 @@ import android.view.MenuItem;
 
 import com.example.lilyhouse.fragments.FilterDialogFragment;
 import com.example.lilyhouse.fragments.MainPageFragment;
-import com.example.lilyhouse.scenes.DetailActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.main_page_menu, menu);
         menuItem = menu.findItem(R.id.sort_menu_item);
         menuItem.setIcon((requestCodes[4] == 0 ? R.drawable.ic_heat_desc : R.drawable.ic_date_desc));
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -85,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.search_menu_item:
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                startActivity(intent);
                 break;
 
             case R.id.filter_menu_item:
@@ -105,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     private void saveRequestCodes(int[] codes) {

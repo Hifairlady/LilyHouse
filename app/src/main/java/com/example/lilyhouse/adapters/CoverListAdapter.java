@@ -26,6 +26,7 @@ public class CoverListAdapter extends RecyclerView.Adapter {
     private static final String BASIC_IMAGE_URL = "https://images.dmzj.com/";
     private ArrayList<MangaCoverItem> coverItems = new ArrayList<>();
     private Context context;
+    private OnItemClickListener mOnItemClickListener;
 
     public CoverListAdapter(Context context) {
         this.context = context;
@@ -107,18 +108,12 @@ public class CoverListAdapter extends RecyclerView.Adapter {
         notifyItemRangeInserted(pos, count);
     }
 
-    private class NormalVH extends RecyclerView.ViewHolder {
+    public void setOnItemClickListener(OnItemClickListener mOnItemClickListener) {
+        this.mOnItemClickListener = mOnItemClickListener;
+    }
 
-        private ImageView ivCover;
-        private TextView tvTitle;
-        private TextView tvAuthor;
-
-        public NormalVH(@NonNull View itemView) {
-            super(itemView);
-            ivCover = itemView.findViewById(R.id.iv_cover);
-            tvTitle = itemView.findViewById(R.id.tv_title);
-            tvAuthor = itemView.findViewById(R.id.tv_author);
-        }
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     public void addFooter() {
@@ -141,4 +136,25 @@ public class CoverListAdapter extends RecyclerView.Adapter {
             super(itemView);
         }
     }
+
+    private class NormalVH extends RecyclerView.ViewHolder {
+
+        private ImageView ivCover;
+        private TextView tvTitle;
+        private TextView tvAuthor;
+
+        public NormalVH(@NonNull View itemView) {
+            super(itemView);
+            ivCover = itemView.findViewById(R.id.iv_cover);
+            tvTitle = itemView.findViewById(R.id.tv_title);
+            tvAuthor = itemView.findViewById(R.id.tv_author);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnItemClickListener.onItemClick(getAdapterPosition());
+                }
+            });
+        }
+    }
+
 }
