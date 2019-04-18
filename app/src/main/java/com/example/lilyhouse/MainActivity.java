@@ -1,5 +1,6 @@
 package com.example.lilyhouse;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lilyhouse.fragments.FilterDialogFragment;
 import com.example.lilyhouse.fragments.MainPageFragment;
+import com.example.lilyhouse.scenes.DetailActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -83,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.search_menu_item:
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.filter_menu_item:
