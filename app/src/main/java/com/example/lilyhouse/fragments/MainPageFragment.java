@@ -44,6 +44,8 @@ public class MainPageFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private boolean isLoadingNext = false;
+
     private SwipeRefreshLayout srlLayout;
     private RecyclerView rvCoverItems;
     private CoverListAdapter coverListAdapter;
@@ -101,6 +103,8 @@ public class MainPageFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<MangaCoverItem> mangaCoverItems) {
                 coverListAdapter.setItems(mangaCoverItems);
+                coverListAdapter.addFooter();
+                isLoadingNext = false;
             }
         });
 
@@ -133,7 +137,8 @@ public class MainPageFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
                 GridLayoutManager layoutManager1 = (GridLayoutManager) rvCoverItems.getLayoutManager();
                 int lastPos = layoutManager1.findLastCompletelyVisibleItemPosition();
-                if (lastPos >= coverListAdapter.getItemCount() - 1) {
+                if (lastPos == coverListAdapter.getItemCount() - 1 && !isLoadingNext) {
+                    isLoadingNext = true;
                     loadNextPageItems();
                 }
             }
@@ -157,18 +162,22 @@ public class MainPageFragment extends Fragment {
                     mCoverViewModel.insertItems(items);
                 }
                 srlLayout.setRefreshing(false);
+                isLoadingNext = false;
             }
 
             @Override
             public void onFailure(Call<List<MangaCoverItem>> call, Throwable t) {
                 Snackbar.make(rvCoverItems, "Network Error!", Snackbar.LENGTH_SHORT).show();
+                coverListAdapter.addFooter();
                 srlLayout.setRefreshing(false);
+                isLoadingNext = false;
             }
         });
     }
 
     private void loadNextPageItems() {
         pageCode = pageCode + 1;
+        coverListAdapter.removeFooter();
         loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
     }
 

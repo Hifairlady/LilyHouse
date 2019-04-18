@@ -43,13 +43,21 @@ public class CoverListAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(context).inflate(R.layout.main_cover_item_layout,
-                viewGroup, false);
-        return new NormalVH(itemView);
+        View itemView;
+        if (i == MangaCoverItem.TYPE_FOOTER) {
+            itemView = LayoutInflater.from(context).inflate(R.layout.footer_item_layout,
+                    viewGroup, false);
+            return new FooterVH(itemView);
+        } else {
+            itemView = LayoutInflater.from(context).inflate(R.layout.main_cover_item_layout,
+                    viewGroup, false);
+            return new NormalVH(itemView);
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        if (viewHolder instanceof FooterVH) return;
         NormalVH normalVH = (NormalVH) viewHolder;
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.anim_from_bottom);
         normalVH.itemView.startAnimation(animation);
@@ -74,6 +82,12 @@ public class CoverListAdapter extends RecyclerView.Adapter {
     public long getItemId(int position) {
         if (coverItems == null || coverItems.size() == 0) return 0;
         return coverItems.get(position).id;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (coverItems == null || coverItems.size() == 0) return 0;
+        return coverItems.get(position).getItemType();
     }
 
     public void addItems(List<MangaCoverItem> items) {
@@ -103,6 +117,27 @@ public class CoverListAdapter extends RecyclerView.Adapter {
             ivCover = itemView.findViewById(R.id.iv_cover);
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvAuthor = itemView.findViewById(R.id.tv_author);
+        }
+    }
+
+    public void addFooter() {
+        if (coverItems == null || coverItems.size() == 0 ||
+                coverItems.get(coverItems.size() - 1).getItemType() == MangaCoverItem.TYPE_FOOTER)
+            return;
+        coverItems.add(new MangaCoverItem(MangaCoverItem.TYPE_FOOTER));
+        notifyItemInserted(coverItems.size() - 1);
+    }
+
+    public void removeFooter() {
+        if (getItemViewType(coverItems.size() - 1) == MangaCoverItem.TYPE_FOOTER) {
+            coverItems.remove(coverItems.size() - 1);
+//            notifyItemRemoved(coverItems.size());
+        }
+    }
+
+    private class FooterVH extends RecyclerView.ViewHolder {
+        public FooterVH(@NonNull View itemView) {
+            super(itemView);
         }
     }
 }
