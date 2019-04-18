@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     private void saveRequestCodes(int[] codes) {
