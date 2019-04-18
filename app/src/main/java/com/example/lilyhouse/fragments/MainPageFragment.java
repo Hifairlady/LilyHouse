@@ -44,6 +44,7 @@ public class MainPageFragment extends Fragment {
     private int[] requestCodes;
 
     private boolean isLoadingNext = false;
+    private boolean isRefreshing = false;
 
     private SwipeRefreshLayout srlLayout;
     private RecyclerView rvCoverItems;
@@ -146,7 +147,7 @@ public class MainPageFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
                 GridLayoutManager layoutManager1 = (GridLayoutManager) rvCoverItems.getLayoutManager();
                 int lastPos = layoutManager1.findLastCompletelyVisibleItemPosition();
-                if (lastPos == coverListAdapter.getItemCount() - 1 && !isLoadingNext) {
+                if (lastPos == coverListAdapter.getItemCount() - 1 && !isLoadingNext && !srlLayout.isRefreshing()) {
                     isLoadingNext = true;
                     loadNextPageItems();
                 }
@@ -168,6 +169,14 @@ public class MainPageFragment extends Fragment {
                 if (!response.isSuccessful()) {
                     Snackbar.make(rvCoverItems, "Request Page Error!", Snackbar.LENGTH_SHORT).show();
                 } else {
+                    if (srlLayout.isRefreshing()) {
+                        coverListAdapter = new CoverListAdapter(getActivity());
+                        coverListAdapter.setOnItemClickListener(mOnItemClickListener);
+                        rvCoverItems.setAdapter(coverListAdapter);
+                        rvCoverItems.invalidate();
+                        mCoverViewModel.deleteAllItems();
+                    }
+
                     MangaCoverItem[] items = new MangaCoverItem[response.body().size()];
                     response.body().toArray(items);
                     mCoverViewModel.insertItems(items);
@@ -198,12 +207,14 @@ public class MainPageFragment extends Fragment {
     }
 
     private void refreshAction() {
+//        coverListAdapter = new CoverListAdapter(getActivity());
+//        coverListAdapter.setOnItemClickListener(mOnItemClickListener);
+//        rvCoverItems.setAdapter(coverListAdapter);
+//        rvCoverItems.invalidate();
+//        mCoverViewModel.deleteAllItems();
+
+        srlLayout.setRefreshing(true);
         pageCode = 0;
-        coverListAdapter = new CoverListAdapter(getActivity());
-        coverListAdapter.setOnItemClickListener(mOnItemClickListener);
-        rvCoverItems.setAdapter(coverListAdapter);
-        rvCoverItems.invalidate();
-        mCoverViewModel.deleteAllItems();
         loadCoverItems(subjectCode, groupCode, statusCode, regionCode, sortCode, pageCode);
     }
 
