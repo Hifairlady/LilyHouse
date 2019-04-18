@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "==========MainActivity";
 
     private MainPageFragment fragment;
-    private FilterDialogFragment filterDialogFragment;
-    private int curSortOrder = 0;
     private int[] requestCodes = new int[6];
     private MenuItem menuItem;
 
@@ -38,20 +35,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onFilterApply(int[] newRequestCodes) {
             requestCodes = newRequestCodes;
-            fragment.filterApplyAction(newRequestCodes);
-            SharedPreferences sharedPreferences = getSharedPreferences("REQUEST_CODES", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
-            editor.putInt("SUBJECT_CODE", newRequestCodes[0]);
-            editor.putInt("GROUP_CODE", newRequestCodes[1]);
-            editor.putInt("STATUS_CODE", newRequestCodes[2]);
-            editor.putInt("REGION_CODE", newRequestCodes[3]);
-            editor.putInt("SORT_CODE", newRequestCodes[4]);
-            editor.putInt("PAGE_CODE", newRequestCodes[5]);
-            editor.apply();
-            Log.d(TAG, "onFilterApply: request codes saved!");
+            fragment.filterApplyAction(requestCodes);
+            saveRequestCodes(requestCodes);
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        saveRequestCodes(requestCodes);
+    }
 
     private void initData() {
 //        int subjectCode = 1, groupCode = 0, statusCode = 0, regionCode = 1, sortCode = 0, pageCode = 0;
@@ -83,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         menuItem = menu.findItem(R.id.sort_menu_item);
-        menuItem.setIcon(curSortOrder == 0 ? R.drawable.ic_heat_desc : R.drawable.ic_date_desc);
+        menuItem.setIcon((requestCodes[4] == 0 ? R.drawable.ic_heat_desc : R.drawable.ic_date_desc));
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -97,15 +90,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.filter_menu_item:
-                filterDialogFragment = FilterDialogFragment.newInstance(requestCodes);
+                FilterDialogFragment filterDialogFragment = FilterDialogFragment.newInstance(requestCodes);
                 filterDialogFragment.setOnFilterApplyListener(mOnFilterApplyListener);
                 filterDialogFragment.show(getSupportFragmentManager(), "FilterDialogFragment");
                 break;
 
             case R.id.sort_menu_item:
-                curSortOrder = (curSortOrder == 0 ? 1 : 0);
-                item.setIcon((curSortOrder == 0 ? R.drawable.ic_date_desc : R.drawable.ic_heat_desc));
-                fragment.switchSortOrder(curSortOrder);
+                requestCodes[4] = (requestCodes[4] == 0 ? 1 : 0);
+                item.setIcon((requestCodes[4] == 0 ? R.drawable.ic_heat_desc : R.drawable.ic_date_desc));
+                fragment.switchSortOrder(requestCodes[4]);
                 break;
 
             default:
@@ -115,9 +108,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        filterDialogFragment.dismiss();
+    private void saveRequestCodes(int[] codes) {
+        SharedPreferences sharedPreferences = getSharedPreferences("REQUEST_CODES", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.putInt("SUBJECT_CODE", codes[0]);
+        editor.putInt("GROUP_CODE", codes[1]);
+        editor.putInt("STATUS_CODE", codes[2]);
+        editor.putInt("REGION_CODE", codes[3]);
+        editor.putInt("SORT_CODE", codes[4]);
+        editor.putInt("PAGE_CODE", codes[5]);
+        editor.apply();
     }
+
 }
