@@ -2,12 +2,13 @@ package com.example.lilyhouse;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.lilyhouse.fragments.FilterDialogFragment;
 import com.example.lilyhouse.fragments.MainPageFragment;
@@ -18,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
 
     private MainPageFragment fragment;
     private int[] requestCodes = new int[6];
-    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_page_menu, menu);
-        menuItem = menu.findItem(R.id.sort_menu_item);
+        MenuItem menuItem = menu.findItem(R.id.sort_menu_item);
         menuItem.setIcon((requestCodes[4] == 0 ? R.drawable.ic_heat_desc : R.drawable.ic_date_desc));
         return true;
     }

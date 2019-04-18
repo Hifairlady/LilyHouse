@@ -1,9 +1,10 @@
 package com.example.lilyhouse.viewmodels;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 import com.example.lilyhouse.models.MangaCoverItem;
 import com.example.lilyhouse.repositories.CoverItemRepo;
