@@ -3,15 +3,146 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="256dp">
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="160dp"
+        android:id="@+id/iv_detail_cover"
+        android:layout_width="144dp"
         android:layout_height="0dp"
+        android:contentDescription="@null"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars[1]" />
+
+    <ImageView
+        android:id="@+id/iv_author_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/cg_hsv_1"
+        app:layout_constraintStart_toEndOf="@+id/iv_detail_cover"
+        app:layout_constraintTop_toTopOf="@+id/cg_hsv_1"
+        app:srcCompat="@drawable/ic_author_circle" />
+
+    <HorizontalScrollView
+        android:id="@+id/cg_hsv_1"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_author_icon"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_author_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:chipSpacingHorizontal="4dp"
+            app:singleLine="true">
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </HorizontalScrollView>
+
+    <ImageView
+        android:id="@+id/iv_update_time_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/cg_hsv_4"
+        app:layout_constraintEnd_toEndOf="@+id/iv_author_icon"
+        app:layout_constraintStart_toStartOf="@+id/iv_author_icon"
+        app:layout_constraintTop_toTopOf="@+id/cg_hsv_4"
+        app:srcCompat="@drawable/ic_clock" />
+
+    <HorizontalScrollView
+        android:id="@+id/cg_hsv_2"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="@+id/cg_hsv_1"
+        app:layout_constraintStart_toStartOf="@+id/cg_hsv_1"
+        app:layout_constraintTop_toBottomOf="@+id/cg_hsv_1">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_tags_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:singleLine="true" />
+
+    </HorizontalScrollView>
+
+    <ImageView
+        android:id="@+id/iv_tag_icon_1"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/cg_hsv_2"
+        app:layout_constraintEnd_toEndOf="@+id/iv_author_icon"
+        app:layout_constraintStart_toStartOf="@+id/iv_author_icon"
+        app:layout_constraintTop_toTopOf="@+id/cg_hsv_2"
+        app:srcCompat="@drawable/ic_tag" />
+
+    <HorizontalScrollView
+        android:id="@+id/cg_hsv_3"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="@+id/cg_hsv_1"
+        app:layout_constraintStart_toStartOf="@+id/cg_hsv_1"
+        app:layout_constraintTop_toBottomOf="@+id/cg_hsv_2">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_tags_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:singleLine="true" />
+
+    </HorizontalScrollView>
+
+    <ImageView
+        android:id="@+id/iv_tag_icon_2"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/cg_hsv_3"
+        app:layout_constraintEnd_toEndOf="@+id/iv_author_icon"
+        app:layout_constraintStart_toStartOf="@+id/iv_author_icon"
+        app:layout_constraintTop_toTopOf="@+id/cg_hsv_3"
+        app:srcCompat="@drawable/ic_tag" />
+
+    <HorizontalScrollView
+        android:id="@+id/cg_hsv_4"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cg_hsv_1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/cg_hsv_1"
+        app:layout_constraintTop_toBottomOf="@+id/cg_hsv_3"
+        app:layout_constraintVertical_bias="1.0">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_update_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:singleLine="true" />
+
+    </HorizontalScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
